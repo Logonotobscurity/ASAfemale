@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { type ArtId, type Product, track } from "@/lib/catalog";
+import { PRODUCTS, type ArtId, type Product, track } from "@/lib/catalog";
 
 export type CartItem = {
   sku: string;
@@ -170,15 +170,25 @@ export const useShop = create<ShopState>((set, get) => ({
     if (wasOpen) track("sms_dismissed", { method });
   },
   findSimilar: (p) => {
-    const cat =
-      p.cat === "skirts"
-        ? "SKIRTS"
-        : p.cat === "trousers"
-          ? "TROUSERS"
-          : p.cat === "gown"
-            ? "MAMIWATA GOWN"
-            : "TENNIS SKIRTS";
-    get().showToast(`SIMILAR ${cat} LOOKS ARE LOADING`);
+    const matches = PRODUCTS.filter((candidate) => candidate.sku !== p.sku)
+      .map((candidate) => ({
+        candidate,
+        score:
+          (candidate.cat === p.cat ? 4 : 0) +
+          (candidate.sizes.some((size) => p.sizes.includes(size)) ? 2 : 0) +
+          (candidate.price <= p.price * 1.25 && candidate.price >= p.price * 0.65 ? 1 : 0),
+      }))
+      .sort((a, b) => b.score - a.score || a.candidate.price - b.candidate.price);
+    const best = matches[0]?.candidate;
+    if (!best) {
+      get().showToast("NO SIMILAR LOOKS AVAILABLE RIGHT NOW");
+      return;
+    }
+    track("find_similar", { sourceSku: p.sku, suggestedSku: best.sku, category: best.cat });
+    get().showToast(`SIMILAR PICK: ${best.name.toUpperCase()}`);
+    window.setTimeout(() => {
+      useShop.getState().openPDP(best);
+    }, 250);
   },
 }));
 
