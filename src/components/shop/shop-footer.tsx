@@ -3,16 +3,11 @@ import { useShop } from "@/lib/shop-store";
 export function ShopFooter() {
   const showToast = useShop((s) => s.showToast);
   const openSheet = useShop((s) => s.openSheet);
+  const resetShop = useShop((s) => s.resetDemo);
 
   function resetDemo() {
-    try {
-      localStorage.removeItem("asa_sub");
-      localStorage.removeItem("asa_dismiss");
-      sessionStorage.removeItem("asa_shown");
-    } catch {
-      /* ignore */
-    }
-    location.reload();
+    resetShop();
+    setTimeout(() => location.reload(), 250);
   }
 
   return (

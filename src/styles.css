@@ -1084,6 +1084,35 @@ main {
   transform: scale(1.08);
 }
 
+.activity-center {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 70;
+  font-size: 10px;
+}
+.activity-toggle {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  padding: 9px 11px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+.activity-panel {
+  width: min(290px, calc(100vw - 32px));
+  margin-top: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+.activity-head { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.activity-head button, .activity-reset { background: none; border: 0; color: var(--mid); font-size: 9px; }
+.activity-panel ul { list-style: none; padding: 0; margin: 10px 0; }
+.activity-panel li { border-bottom: 1px solid var(--line); padding: 7px 0; font-size: 10px; }
+.activity-empty { color: var(--mid); line-height: 1.5; }
+.activity-reset { border-top: 1px solid var(--line); padding-top: 10px; width: 100%; text-align: left; }
+
 /* TOAST */
 .toast {
   position: fixed;

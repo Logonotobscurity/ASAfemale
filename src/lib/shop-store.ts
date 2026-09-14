@@ -9,6 +9,12 @@ export type CartItem = {
   art: ArtId;
 };
 
+export type Activity = {
+  id: string;
+  label: string;
+  createdAt: number;
+};
+
 export type ShopState = {
   cart: CartItem[];
   pdp: Product | null;
@@ -19,6 +25,14 @@ export type ShopState = {
   cartOpen: boolean;
   toast: string | null;
   sheetOpen: boolean;
+  activities: Activity[];
+  hydrated: boolean;
+  offline: boolean;
+  setHydrated: (hydrated: boolean) => void;
+  setOffline: (offline: boolean) => void;
+  clearActivities: () => void;
+  resetDemo: () => void;
+  recordActivity: (label: string) => void;
   shakeChips: number;
   openPDP: (p: Product) => void;
   closePDP: () => void;
@@ -89,10 +103,34 @@ export const useShop = create<ShopState>((set, get) => ({
   cartOpen: false,
   toast: null,
   sheetOpen: false,
+  activities: [],
+  hydrated: false,
+  offline: typeof navigator !== "undefined" ? !navigator.onLine : false,
   shakeChips: 0,
+
+  setHydrated: (hydrated) => set({ hydrated }),
+  setOffline: (offline) => set({ offline }),
+  recordActivity: (label) =>
+    set((state) => ({
+      activities: [{ id: `${Date.now()}-${Math.random()}`, label, createdAt: Date.now() }, ...state.activities].slice(0, 20),
+    })),
+  clearActivities: () => set({ activities: [] }),
+  resetDemo: () => {
+    try {
+      localStorage.removeItem("asa_shop_state_v1");
+      localStorage.removeItem("asa_sub");
+      localStorage.removeItem("asa_dismiss");
+      sessionStorage.removeItem("asa_shown");
+    } catch {
+      /* private mode */
+    }
+    set({ cart: [], activities: [], liked: false, sheetOpen: false, cartOpen: false, pdpOpen: false });
+    get().showToast("DEMO STATE RESET");
+  },
 
   openPDP: (p) => {
     set({ pdp: p, pdpOpen: true, pdpView: 0, selSize: null, liked: false });
+    get().recordActivity(`VIEWED ${p.sku}`);
     track("pdp_view", { sku: p.sku });
   },
   closePDP: () => set({ pdpOpen: false }),
@@ -101,6 +139,7 @@ export const useShop = create<ShopState>((set, get) => ({
   toggleLike: () => {
     const next = !get().liked;
     set({ liked: next });
+    get().recordActivity(next ? "SAVED ITEM TO LIKES" : "REMOVED ITEM FROM LIKES");
     get().showToast(next ? "SAVED TO LIKES" : "REMOVED FROM LIKES");
   },
   addToBag: () => {
@@ -126,14 +165,24 @@ export const useShop = create<ShopState>((set, get) => ({
       selSize: null,
       pdpView: 0,
     });
+    get().recordActivity(`${pdp.sku} · SIZE ${selSize} ADDED TO BAG`);
     get().showToast(`${pdp.sku} · SIZE ${selSize} ADDED TO BAG`);
     track("add_to_bag", { sku: pdp.sku, size: selSize });
   },
-  openCart: () => set({ cartOpen: true }),
+  openCart: () => {
+    set({ cartOpen: true });
+    get().recordActivity("OPENED SHOPPING BAG");
+  },
   closeCart: () => set({ cartOpen: false }),
-  removeCart: (index) =>
-    set({ cart: get().cart.filter((_, i) => i !== index) }),
-  checkout: () => get().showToast("CHECKOUT — DEMO ONLY"),
+  removeCart: (index) => {
+    const item = get().cart[index];
+    set({ cart: get().cart.filter((_, i) => i !== index) });
+    if (item) get().recordActivity(`REMOVED ${item.sku} FROM BAG`);
+  },
+  checkout: () => {
+    get().recordActivity("CHECKOUT PREVIEWED OFFLINE");
+    get().showToast("CHECKOUT — DEMO ONLY");
+  },
   showToast: (msg) => {
     if (toastTimer) clearTimeout(toastTimer);
     set({ toast: msg });
@@ -161,6 +210,35 @@ export const useShop = create<ShopState>((set, get) => ({
           : p.cat === "gown"
             ? "MAMIWATA GOWN"
             : "TENNIS SKIRTS";
+    get().recordActivity(`FOUND SIMILAR ${p.sku}`);
     get().showToast(`SCANNING ${p.sku} — 4 MATCHES IN ${cat}`);
   },
 }));
+
+const PERSISTED_KEY = "asa_shop_state_v1";
+
+export function hydrateShop() {
+  try {
+    const raw = localStorage.getItem(PERSISTED_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw) as Partial<ShopState>;
+    useShop.setState({
+      cart: Array.isArray(parsed.cart) ? parsed.cart.slice(0, 30) : [],
+      activities: Array.isArray(parsed.activities) ? parsed.activities.slice(0, 20) : [],
+      liked: Boolean(parsed.liked),
+      hydrated: true,
+    });
+  } catch {
+    useShop.setState({ hydrated: true });
+  }
+}
+
+if (typeof window !== "undefined") {
+  useShop.subscribe((state) => {
+    try {
+      localStorage.setItem(PERSISTED_KEY, JSON.stringify({ cart: state.cart, activities: state.activities, liked: state.liked }));
+    } catch {
+      /* private mode or storage quota */
+    }
+  });
+}
