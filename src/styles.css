@@ -481,12 +481,6 @@ main {
 .foot a:hover {
   color: var(--ink);
 }
-.foot .demo button {
-  border: 1px solid var(--line);
-  padding: 8px 12px;
-  margin-top: 6px;
-  color: var(--ink);
-}
 .footbot {
   grid-column: 1 / -1;
   font-size: 9px;

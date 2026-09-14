@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { ActivityCenter } from "@/components/shop/activity-center";
 import { CartDrawer } from "@/components/shop/cart-drawer";
 import { CatNav } from "@/components/shop/cat-nav";
 import { CobrowseFab } from "@/components/shop/cobrowse-fab";
@@ -93,7 +92,6 @@ export function ShopApp() {
       <CartDrawer />
       <SmsSheet />
       <CobrowseFab />
-      <ActivityCenter />
       <Toast />
     </>
   );
