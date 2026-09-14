@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { IconClose } from "@/components/shop/icons";
 import { Silhouette } from "@/components/silhouettes";
 import { naira } from "@/lib/catalog";
+import { createWhatsAppCheckout } from "@/lib/commerce";
 import { useShop } from "@/lib/shop-store";
 
 export function CartDrawer() {
@@ -9,7 +11,29 @@ export function CartDrawer() {
   const closeCart = useShop((s) => s.closeCart);
   const removeCart = useShop((s) => s.removeCart);
   const checkout = useShop((s) => s.checkout);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const total = cart.reduce((s, i) => s + i.price, 0);
+
+  async function startCheckout() {
+    if (cart.length === 0 || isCheckingOut) return;
+    setCheckoutError(null);
+    setIsCheckingOut(true);
+    try {
+      const result = await createWhatsAppCheckout({
+        data: {
+          tenantId: "asa-default",
+          items: cart.map((item) => ({ sku: item.sku, size: String(item.size), quantity: 1 })),
+        },
+      });
+      window.open(result.whatsappUrl, "_blank", "noopener,noreferrer");
+      checkout();
+    } catch (error) {
+      setCheckoutError(error instanceof Error ? error.message : "Checkout is temporarily unavailable.");
+    } finally {
+      setIsCheckingOut(false);
+    }
+  }
 
   return (
     <>
@@ -56,8 +80,9 @@ export function CartDrawer() {
             <span>SUBTOTAL</span>
             <span>{naira(total)}</span>
           </div>
-          <button type="button" className="cta m" onClick={checkout}>
-            CHECKOUT
+          {checkoutError ? <p className="mt m" role="alert">{checkoutError}</p> : null}
+          <button type="button" className="cta m" onClick={startCheckout} disabled={isCheckingOut || cart.length === 0}>
+            {isCheckingOut ? "PREPARING WHATSAPP…" : "CHECKOUT VIA WHATSAPP"}
           </button>
         </div>
       </aside>
