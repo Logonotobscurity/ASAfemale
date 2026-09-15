@@ -31,16 +31,19 @@ export function BrandIntro({ onEnter }: BrandIntroProps) {
       </div>
       <div className="brand-intro-center">
         <p className="m brand-intro-kicker">A considered wardrobe, assisted</p>
-        <h1>ASA</h1>
+        <h1>ÀṢÀ</h1>
         <p className="brand-intro-subtitle">Wear your point of view.</p>
-        <p className="brand-intro-copy">Discover a sharper edit of modern feminine dressing, with an AI stylist that listens before it recommends.</p>
+        <div className="brand-intro-creative" aria-label="AI stylist is ready">
+          <ThinkingOrb state={leaving ? "composing" : "breathing"} size={64} speed={0.9} />
+          <span className="m">YOUR STYLIST IS READY</span>
+        </div>
         <button type="button" className="brand-intro-enter" onClick={enterStore}>
           <span>Enter the collection</span><IconArrow />
         </button>
       </div>
       <div className="brand-intro-bottom">
         <div className="brand-intro-features"><span>Curated edits</span><span>Voice styling</span><span>Human connection</span></div>
-        <div className="brand-intro-orb"><ThinkingOrb state="weaving" size={20} /><span className="m">YOUR STYLIST IS READY</span></div>
+        <span className="m brand-intro-prompt">Tap to begin your edit</span>
       </div>
     </section>
   );

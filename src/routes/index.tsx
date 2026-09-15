@@ -1,8 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { ShopApp } from "@/components/shop/shop-app";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { BrandIntro } from "@/components/shop/brand-intro";
 
 export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
-  return <ShopApp />;
+  const navigate = useNavigate();
+
+  return <BrandIntro onEnter={() => navigate({ to: "/store" })} />;
 }

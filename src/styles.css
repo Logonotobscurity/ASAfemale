@@ -147,13 +147,33 @@ img {
 .brand-intro-kicker { margin: 0 0 24px; color: var(--pink); font-size: 10px; }
 .brand-intro h1 { margin: 0; font-size: clamp(88px, 18vw, 220px); font-weight: 700; line-height: 0.78; letter-spacing: -0.12em; }
 .brand-intro-subtitle { margin: 22px 0 0; color: var(--pink); font-family: Georgia, serif; font-size: clamp(24px, 4vw, 42px); font-style: italic; letter-spacing: -0.04em; }
-.brand-intro-copy { width: min(400px, 100%); margin: 22px auto 26px; color: rgba(247, 243, 238, 0.65); font-size: 14px; line-height: 1.55; }
+.brand-intro-creative { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 28px auto 30px; color: rgba(247, 243, 238, 0.56); }
+.brand-intro-creative canvas { width: 64px; height: 64px; filter: drop-shadow(0 0 22px rgba(245, 41, 111, 0.26)); }
 .brand-intro-enter { display: inline-flex; align-items: center; gap: 18px; padding: 12px 12px 12px 18px; border: 1px solid rgba(247, 243, 238, 0.4); border-radius: 999px; background: transparent; color: #f7f3ee; font: 11px var(--mono); text-transform: uppercase; letter-spacing: 0.05em; transition: background 0.2s, color 0.2s, transform 0.2s var(--ease); }
 .brand-intro-enter svg { width: 22px; height: 22px; stroke: currentColor; }
 .brand-intro-enter:hover { background: #f7f3ee; color: var(--ink); transform: translateY(-2px); }
 .brand-intro-features { display: flex; gap: 24px; color: rgba(247, 243, 238, 0.55); font-size: 10px; }
 .brand-intro-orb { display: flex; align-items: center; gap: 9px; }
 .brand-intro-orb canvas { width: 20px; height: 20px; }
+.cobrowse-panel { position: absolute; right: 0; bottom: 70px; width: min(360px, calc(100vw - 24px)); padding: 18px; border: 1px solid rgba(10, 10, 10, 0.12); background: #fbfaf7; color: var(--ink); box-shadow: 0 22px 64px rgba(10, 10, 10, 0.2); }
+.cobrowse-panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.cobrowse-panel-head p { margin: 0 0 5px; color: var(--pink); }
+.cobrowse-panel-head h2 { margin: 0; font-size: 24px; letter-spacing: -0.04em; }
+.cobrowse-panel-head button { border: 0; background: transparent; color: var(--ink); font-size: 24px; line-height: 1; }
+.cobrowse-lede { margin: 14px 0; color: var(--mid); font-size: 13px; line-height: 1.5; }
+.cobrowse-people { display: flex; align-items: center; gap: 8px; margin: 14px 0; }
+.cobrowse-people .avatar { margin-right: -14px; border: 2px solid #fbfaf7; }
+.cobrowse-people .guest { background: var(--ink); }
+.cobrowse-people span:last-child { display: flex; flex-direction: column; gap: 2px; margin-left: 14px; }
+.cobrowse-people small { color: var(--mid); font-size: 10px; }
+.cobrowse-payment { display: grid; gap: 9px; margin: 16px 0; padding: 12px; border: 1px solid rgba(10, 10, 10, 0.12); }
+.cobrowse-payment p { margin: 0 0 3px; color: var(--mid); }
+.cobrowse-payment label { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.cobrowse-share, .cobrowse-social { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; border: 1px solid var(--ink); font: 11px var(--mono); text-transform: uppercase; }
+.cobrowse-share { background: var(--pink); border-color: var(--pink); color: #fff; }
+.cobrowse-share svg { width: 16px; stroke: currentColor; }
+.cobrowse-social { margin-top: 8px; background: transparent; color: var(--ink); }
+.cobrowse-note { margin: 12px 0 0; color: var(--mid); font-size: 10px; line-height: 1.4; }
 .cobrowse-card { display: flex; align-items: center; gap: 10px; min-width: 204px; padding: 9px 10px 9px 9px; border: 1px solid rgba(245, 41, 111, 0.35); border-radius: 999px; background: rgba(250, 250, 250, 0.96); box-shadow: 0 14px 38px rgba(245, 41, 111, 0.16); text-align: left; transition: transform 0.2s var(--ease), border-color 0.2s; }
 .cobrowse-card:hover { transform: translateY(-3px); border-color: var(--pink); }
 .cobrowse-card .avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--pink); color: #fff; }
@@ -1189,6 +1209,8 @@ main {
 
   .fabwrap { width: auto; height: auto; right: 12px; bottom: 12px; }
   .fabwrap .cobrowse-card { min-width: 184px; }
+  .ai-assistant { right: 12px; bottom: 118px; }
+  .ai-panel { right: 0; }
 
   .activity-center {
 

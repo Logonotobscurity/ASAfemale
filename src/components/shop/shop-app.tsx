@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AiShoppingAssistant } from "@/components/shop/ai-shopping-assistant";
-import { BrandIntro } from "@/components/shop/brand-intro";
 import { CartDrawer } from "@/components/shop/cart-drawer";
 import { CatNav } from "@/components/shop/cat-nav";
 import { CobrowseFab } from "@/components/shop/cobrowse-fab";
@@ -13,10 +12,16 @@ import { Toast } from "@/components/shop/toast";
 import { gatesOK, hydrateShop, useShop } from "@/lib/shop-store";
 
 export function ShopApp() {
-  const [showIntro, setShowIntro] = useState(true);
   const setOffline = useShop((s) => s.setOffline);
 
   useEffect(() => {
+    // Each storefront entry starts at the top with transient overlays closed.
+    // Persisted cart and wishlist state remain available across sessions.
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    const state = useShop.getState();
+    state.closeSheet("route-entry", false);
+    state.closePDP();
+    state.closeCart();
     hydrateShop();
     useShop.getState().setHydrated(true);
     const goOffline = () => setOffline(true);
@@ -82,7 +87,6 @@ export function ShopApp() {
 
   return (
     <>
-      {showIntro && <BrandIntro onEnter={() => setShowIntro(false)} />}
       <a className="skip" href="#main">
         SKIP TO CONTENT
       </a>
