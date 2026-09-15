@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { AiShoppingAssistant } from "@/components/shop/ai-shopping-assistant";
+import { BrandIntro } from "@/components/shop/brand-intro";
 import { CartDrawer } from "@/components/shop/cart-drawer";
 import { CatNav } from "@/components/shop/cat-nav";
 import { CobrowseFab } from "@/components/shop/cobrowse-fab";
@@ -8,9 +10,25 @@ import { Rail } from "@/components/shop/rail";
 import { ShopFooter } from "@/components/shop/shop-footer";
 import { SmsSheet } from "@/components/shop/sms-sheet";
 import { Toast } from "@/components/shop/toast";
-import { gatesOK, useShop } from "@/lib/shop-store";
+import { gatesOK, hydrateShop, useShop } from "@/lib/shop-store";
 
 export function ShopApp() {
+  const [showIntro, setShowIntro] = useState(true);
+  const setOffline = useShop((s) => s.setOffline);
+
+  useEffect(() => {
+    hydrateShop();
+    useShop.getState().setHydrated(true);
+    const goOffline = () => setOffline(true);
+    const goOnline = () => setOffline(false);
+    window.addEventListener("offline", goOffline);
+    window.addEventListener("online", goOnline);
+    return () => {
+      window.removeEventListener("offline", goOffline);
+      window.removeEventListener("online", goOnline);
+    };
+  }, [setOffline]);
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key !== "Escape") return;
@@ -64,6 +82,7 @@ export function ShopApp() {
 
   return (
     <>
+      {showIntro && <BrandIntro onEnter={() => setShowIntro(false)} />}
       <a className="skip" href="#main">
         SKIP TO CONTENT
       </a>
@@ -77,6 +96,7 @@ export function ShopApp() {
       <CartDrawer />
       <SmsSheet />
       <CobrowseFab />
+      <AiShoppingAssistant />
       <Toast />
     </>
   );

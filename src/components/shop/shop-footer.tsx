@@ -3,18 +3,6 @@ import { useShop } from "@/lib/shop-store";
 export function ShopFooter() {
   const showToast = useShop((s) => s.showToast);
   const openSheet = useShop((s) => s.openSheet);
-
-  function resetDemo() {
-    try {
-      localStorage.removeItem("asa_sub");
-      localStorage.removeItem("asa_dismiss");
-      sessionStorage.removeItem("asa_shown");
-    } catch {
-      /* ignore */
-    }
-    location.reload();
-  }
-
   return (
     <footer className="foot">
       <div>
@@ -31,20 +19,16 @@ export function ShopFooter() {
             key={label}
             type="button"
             className="m flink"
-            onClick={() => showToast(label + " — DEMO")}
+            onClick={() => showToast(`${label} — DETAILS COMING SOON`)}
           >
             {label}
           </button>
         ))}
       </div>
-      <div className="demo">
-        <h4 className="m">DEMO CONTROLS</h4>
-        <button type="button" className="m" onClick={() => openSheet("manual_preview")}>
-          PREVIEW SMS SHEET
-        </button>
-        <button type="button" className="m" onClick={resetDemo}>
-          RESET DEMO STATE
-        </button>
+      <div>
+        <h4 className="m">STAY IN THE KNOW</h4>
+        <button type="button" className="m flink" onClick={() => openSheet("footer")}>JOIN THE SMS LIST</button>
+        <p>Early access to limited drops, private fittings, and studio notes.</p>
       </div>
       <div className="footbot m">© 2025 ÀṢÀ — LAGOS · ABUJA · +234 · ALL DROPS TEXTED FIRST</div>
     </footer>

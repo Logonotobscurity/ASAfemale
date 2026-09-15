@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { type ArtId, type Product, track } from "@/lib/catalog";
+import { PRODUCTS, type ArtId, type Product, track } from "@/lib/catalog";
 
 export type CartItem = {
   sku: string;
@@ -19,6 +19,10 @@ export type ShopState = {
   cartOpen: boolean;
   toast: string | null;
   sheetOpen: boolean;
+  hydrated: boolean;
+  offline: boolean;
+  setHydrated: (hydrated: boolean) => void;
+  setOffline: (offline: boolean) => void;
   shakeChips: number;
   openPDP: (p: Product) => void;
   closePDP: () => void;
@@ -89,8 +93,12 @@ export const useShop = create<ShopState>((set, get) => ({
   cartOpen: false,
   toast: null,
   sheetOpen: false,
+  hydrated: false,
+  offline: typeof navigator !== "undefined" ? !navigator.onLine : false,
   shakeChips: 0,
 
+  setHydrated: (hydrated) => set({ hydrated }),
+  setOffline: (offline) => set({ offline }),
   openPDP: (p) => {
     set({ pdp: p, pdpOpen: true, pdpView: 0, selSize: null, liked: false });
     track("pdp_view", { sku: p.sku });
@@ -129,11 +137,20 @@ export const useShop = create<ShopState>((set, get) => ({
     get().showToast(`${pdp.sku} · SIZE ${selSize} ADDED TO BAG`);
     track("add_to_bag", { sku: pdp.sku, size: selSize });
   },
-  openCart: () => set({ cartOpen: true }),
+  openCart: () => {
+    set({ cartOpen: true });
+  },
   closeCart: () => set({ cartOpen: false }),
-  removeCart: (index) =>
-    set({ cart: get().cart.filter((_, i) => i !== index) }),
-  checkout: () => get().showToast("CHECKOUT — DEMO ONLY"),
+  removeCart: (index) => {
+    set({ cart: get().cart.filter((_, i) => i !== index) });
+  },
+  checkout: () => {
+    if (get().cart.length === 0) {
+      get().showToast("YOUR BAG IS EMPTY");
+      return;
+    }
+    get().showToast("CHECKOUT IS BEING CONFIGURED");
+  },
   showToast: (msg) => {
     if (toastTimer) clearTimeout(toastTimer);
     set({ toast: msg });
@@ -153,14 +170,51 @@ export const useShop = create<ShopState>((set, get) => ({
     if (wasOpen) track("sms_dismissed", { method });
   },
   findSimilar: (p) => {
-    const cat =
-      p.cat === "skirts"
-        ? "SKIRTS"
-        : p.cat === "trousers"
-          ? "TROUSERS"
-          : p.cat === "gown"
-            ? "MAMIWATA GOWN"
-            : "TENNIS SKIRTS";
-    get().showToast(`SCANNING ${p.sku} — 4 MATCHES IN ${cat}`);
+    const matches = PRODUCTS.filter((candidate) => candidate.sku !== p.sku)
+      .map((candidate) => ({
+        candidate,
+        score:
+          (candidate.cat === p.cat ? 4 : 0) +
+          (candidate.sizes.some((size) => p.sizes.includes(size)) ? 2 : 0) +
+          (candidate.price <= p.price * 1.25 && candidate.price >= p.price * 0.65 ? 1 : 0),
+      }))
+      .sort((a, b) => b.score - a.score || a.candidate.price - b.candidate.price);
+    const best = matches[0]?.candidate;
+    if (!best) {
+      get().showToast("NO SIMILAR LOOKS AVAILABLE RIGHT NOW");
+      return;
+    }
+    track("find_similar", { sourceSku: p.sku, suggestedSku: best.sku, category: best.cat });
+    get().showToast(`SIMILAR PICK: ${best.name.toUpperCase()}`);
+    window.setTimeout(() => {
+      useShop.getState().openPDP(best);
+    }, 250);
   },
 }));
+
+const PERSISTED_KEY = "asa_shop_state_v1";
+
+export function hydrateShop() {
+  try {
+    const raw = localStorage.getItem(PERSISTED_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw) as Partial<ShopState>;
+    useShop.setState({
+      cart: Array.isArray(parsed.cart) ? parsed.cart.slice(0, 30) : [],
+      liked: Boolean(parsed.liked),
+      hydrated: true,
+    });
+  } catch {
+    useShop.setState({ hydrated: true });
+  }
+}
+
+if (typeof window !== "undefined") {
+  useShop.subscribe((state) => {
+    try {
+      localStorage.setItem(PERSISTED_KEY, JSON.stringify({ cart: state.cart, liked: state.liked }));
+    } catch {
+      /* private mode or storage quota */
+    }
+  });
+}
