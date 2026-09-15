@@ -1,0 +1,12 @@
+{
+  "name": "ÀṢÀ — Womenswear Drops",
+  "short_name": "ÀṢÀ",
+  "description": "A considered womenswear edit from Lagos.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f5f7f8",
+  "theme_color": "#f5296f",
+  "lang": "en",
+  "icons": [{ "src": "/__grok/icon-180.png", "sizes": "180x180", "type": "image/png", "purpose": "any maskable" }]
+}
