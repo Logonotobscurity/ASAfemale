@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { AiShoppingAssistant } from "@/components/shop/ai-shopping-assistant";
 import { CartDrawer } from "@/components/shop/cart-drawer";
 import { CatNav } from "@/components/shop/cat-nav";
 import { CobrowseFab } from "@/components/shop/cobrowse-fab";
@@ -92,6 +93,7 @@ export function ShopApp() {
       <CartDrawer />
       <SmsSheet />
       <CobrowseFab />
+      <AiShoppingAssistant />
       <Toast />
     </>
   );
