@@ -31,7 +31,7 @@ export function BrandIntro({ onEnter }: BrandIntroProps) {
       </div>
       <div className="brand-intro-center">
         <p className="m brand-intro-kicker">A considered wardrobe, assisted</p>
-        <h1>ASA</h1>
+        <h1>ÀṢÀ</h1>
         <p className="brand-intro-subtitle">Wear your point of view.</p>
         <div className="brand-intro-creative" aria-label="AI stylist is ready">
           <ThinkingOrb state={leaving ? "composing" : "breathing"} size={64} speed={0.9} />

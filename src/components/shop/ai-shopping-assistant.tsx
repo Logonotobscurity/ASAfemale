@@ -35,7 +35,12 @@ export function AiShoppingAssistant() {
     const dx = event.clientX - drag.startX;
     const dy = event.clientY - drag.startY;
     if (Math.abs(dx) + Math.abs(dy) > 6) movedRef.current = true;
-    setPosition({ x: drag.originX + dx, y: drag.originY + dy });
+    const maxX = Math.max(0, window.innerWidth - 116);
+    const maxY = Math.max(0, window.innerHeight - 132);
+    setPosition({
+      x: Math.min(maxX, Math.max(-window.innerWidth + 140, drag.originX + dx)),
+      y: Math.min(maxY, Math.max(-window.innerHeight + 150, drag.originY + dy)),
+    });
   }
 
   function endDrag(event: React.PointerEvent<HTMLElement>) {
@@ -120,8 +125,8 @@ export function AiShoppingAssistant() {
         aria-expanded={open}
         aria-label={open ? "Close AI shopping assistant" : "Open AI shopping assistant"}
       >
-        <ThinkingOrb state={listening ? "listening" : open ? orbState : "breathing"} size={64} />
-        <span className="ai-launcher-label">{listening ? "LISTENING" : "AI STYLIST"}</span>
+        <ThinkingOrb state={listening ? "listening" : open ? "composing" : "breathing"} size={64} />
+        <span className="ai-launcher-label">{listening ? "LISTENING" : open ? "CLOSE" : "AI STYLIST"}</span>
       </button>
     </aside>
   );
