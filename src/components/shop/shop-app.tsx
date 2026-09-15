@@ -15,6 +15,13 @@ export function ShopApp() {
   const setOffline = useShop((s) => s.setOffline);
 
   useEffect(() => {
+    // Each storefront entry starts at the top with transient overlays closed.
+    // Persisted cart and wishlist state remain available across sessions.
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    const state = useShop.getState();
+    state.closeSheet("route-entry", false);
+    state.closePDP();
+    state.closeCart();
     hydrateShop();
     useShop.getState().setHydrated(true);
     const goOffline = () => setOffline(true);
