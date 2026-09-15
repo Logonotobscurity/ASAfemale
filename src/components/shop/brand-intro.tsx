@@ -31,7 +31,8 @@ export function BrandIntro({ onEnter }: BrandIntroProps) {
       </div>
       <div className="brand-intro-center">
         <p className="m brand-intro-kicker">A considered wardrobe, assisted</p>
-        <h1>Wear your<br /><em>point of view.</em></h1>
+        <h1>ASA</h1>
+        <p className="brand-intro-subtitle">Wear your point of view.</p>
         <p className="brand-intro-copy">Discover a sharper edit of modern feminine dressing, with an AI stylist that listens before it recommends.</p>
         <button type="button" className="brand-intro-enter" onClick={enterStore}>
           <span>Enter the collection</span><IconArrow />

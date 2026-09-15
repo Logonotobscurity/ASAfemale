@@ -18,7 +18,29 @@ export function AiShoppingAssistant() {
   const [orbState, setOrbState] = useState<OrbState>("breathing");
   const [listening, setListening] = useState(false);
   const [reply, setReply] = useState("Ask me to find a look, compare pieces, or guide you to checkout.");
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const dragRef = useRef<{ pointerId: number; startX: number; startY: number; originX: number; originY: number } | null>(null);
+  const movedRef = useRef(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+
+  function beginDrag(event: React.PointerEvent<HTMLElement>) {
+    dragRef.current = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, originX: position.x, originY: position.y };
+    movedRef.current = false;
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function moveDrag(event: React.PointerEvent<HTMLElement>) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const dx = event.clientX - drag.startX;
+    const dy = event.clientY - drag.startY;
+    if (Math.abs(dx) + Math.abs(dy) > 6) movedRef.current = true;
+    setPosition({ x: drag.originX + dx, y: drag.originY + dy });
+  }
+
+  function endDrag(event: React.PointerEvent<HTMLElement>) {
+    if (dragRef.current?.pointerId === event.pointerId) dragRef.current = null;
+  }
 
   useEffect(() => () => recognitionRef.current?.abort(), []);
 
@@ -62,7 +84,11 @@ export function AiShoppingAssistant() {
   }
 
   return (
-    <aside className={`ai-assistant ${open ? "is-open" : ""}`} aria-label="AI shopping assistant">
+    <aside
+      className={`ai-assistant ${open ? "is-open" : ""}`}
+      aria-label="AI shopping assistant"
+      style={{ transform: `translate3d(${position.x}px, ${position.y}px, 0)` }}
+    >
       {open && (
         <div className="ai-panel">
           <div className="ai-panel-head">
@@ -81,7 +107,19 @@ export function AiShoppingAssistant() {
           <p className="ai-note">Voice stays in your browser. No recording is stored.</p>
         </div>
       )}
-      <button type="button" className="ai-launcher" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label={open ? "Close AI shopping assistant" : "Open AI shopping assistant"}>
+      <button
+        type="button"
+        className="ai-launcher"
+        onPointerDown={beginDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onClick={() => {
+          if (!movedRef.current) setOpen((value) => !value);
+        }}
+        aria-expanded={open}
+        aria-label={open ? "Close AI shopping assistant" : "Open AI shopping assistant"}
+      >
         <ThinkingOrb state={listening ? "listening" : open ? orbState : "breathing"} size={64} />
         <span className="ai-launcher-label">{listening ? "LISTENING" : "AI STYLIST"}</span>
       </button>
