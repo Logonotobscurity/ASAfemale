@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AiShoppingAssistant } from "@/components/shop/ai-shopping-assistant";
+import { BrandIntro } from "@/components/shop/brand-intro";
 import { CartDrawer } from "@/components/shop/cart-drawer";
 import { CatNav } from "@/components/shop/cat-nav";
 import { CobrowseFab } from "@/components/shop/cobrowse-fab";
@@ -12,6 +13,7 @@ import { Toast } from "@/components/shop/toast";
 import { gatesOK, hydrateShop, useShop } from "@/lib/shop-store";
 
 export function ShopApp() {
+  const [showIntro, setShowIntro] = useState(true);
   const setOffline = useShop((s) => s.setOffline);
 
   useEffect(() => {
@@ -80,6 +82,7 @@ export function ShopApp() {
 
   return (
     <>
+      {showIntro && <BrandIntro onEnter={() => setShowIntro(false)} />}
       <a className="skip" href="#main">
         SKIP TO CONTENT
       </a>

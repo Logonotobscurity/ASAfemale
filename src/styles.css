@@ -123,6 +123,58 @@ img {
   .ai-launcher { width: 92px; min-height: 92px; border-radius: 22px; }
   .ai-panel { position: absolute; right: -72px; bottom: 104px; width: calc(100vw - 24px); }
 }
+.brand-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px 42px 30px;
+  background: var(--ink);
+  color: #f7f3ee;
+  transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
+}
+.brand-intro.is-leaving { opacity: 0; transform: translateY(-18px); pointer-events: none; }
+.brand-intro-top, .brand-intro-bottom { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.brand-intro-top .m, .brand-intro-bottom .m { color: rgba(247, 243, 238, 0.56); font-size: 9px; }
+.brand-intro-mark { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgba(247, 243, 238, 0.35); border-radius: 50%; }
+.brand-intro-mark svg { width: 20px; height: 20px; }
+.brand-intro-mark svg circle, .brand-intro-mark svg path { stroke: #f7f3ee; }
+.brand-intro-center { width: min(760px, 100%); margin: auto; text-align: center; }
+.brand-intro-kicker { margin: 0 0 24px; color: var(--pink); font-size: 10px; }
+.brand-intro h1 { margin: 0; font-size: clamp(54px, 10vw, 142px); font-weight: 500; line-height: 0.86; letter-spacing: -0.08em; }
+.brand-intro h1 em { color: var(--pink); font-family: Georgia, serif; font-weight: 400; }
+.brand-intro-copy { width: min(400px, 100%); margin: 28px auto 26px; color: rgba(247, 243, 238, 0.65); font-size: 14px; line-height: 1.55; }
+.brand-intro-enter { display: inline-flex; align-items: center; gap: 18px; padding: 12px 12px 12px 18px; border: 1px solid rgba(247, 243, 238, 0.4); border-radius: 999px; background: transparent; color: #f7f3ee; font: 11px var(--mono); text-transform: uppercase; letter-spacing: 0.05em; transition: background 0.2s, color 0.2s, transform 0.2s var(--ease); }
+.brand-intro-enter svg { width: 22px; height: 22px; stroke: currentColor; }
+.brand-intro-enter:hover { background: #f7f3ee; color: var(--ink); transform: translateY(-2px); }
+.brand-intro-features { display: flex; gap: 24px; color: rgba(247, 243, 238, 0.55); font-size: 10px; }
+.brand-intro-orb { display: flex; align-items: center; gap: 9px; }
+.brand-intro-orb canvas { width: 20px; height: 20px; }
+.cobrowse-card { display: flex; align-items: center; gap: 10px; min-width: 204px; padding: 9px 10px 9px 9px; border: 1px solid rgba(245, 41, 111, 0.35); border-radius: 999px; background: rgba(250, 250, 250, 0.96); box-shadow: 0 14px 38px rgba(245, 41, 111, 0.16); text-align: left; transition: transform 0.2s var(--ease), border-color 0.2s; }
+.cobrowse-card:hover { transform: translateY(-3px); border-color: var(--pink); }
+.cobrowse-card .avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--pink); color: #fff; }
+.cobrowse-card .avatar svg { width: 18px; height: 18px; stroke: currentColor; fill: none; }
+.cobrowse-copy { display: flex; flex: 1; flex-direction: column; gap: 2px; }
+.cobrowse-copy strong { font-size: 11px; }
+.cobrowse-copy small { color: var(--mid); font-size: 9px; }
+.cobrowse-card > svg { width: 16px; height: 16px; stroke: var(--pink); }
+.ai-voice { position: relative; font-size: 0; }
+.ai-voice::before { content: ""; width: 9px; height: 13px; border: 1.5px solid currentColor; border-radius: 7px; }
+.ai-voice::after { content: ""; position: absolute; bottom: 6px; width: 13px; height: 7px; border: 1.5px solid currentColor; border-top: 0; border-radius: 0 0 9px 9px; }
+.ai-voice.is-listening { box-shadow: 0 0 0 5px rgba(245, 41, 111, 0.14); }
+@media (max-width: 640px) {
+  .brand-intro { padding: 22px 20px 24px; }
+  .brand-intro-top { align-items: flex-start; }
+  .brand-intro-top > .m:last-child { display: none; }
+  .brand-intro h1 { font-size: clamp(54px, 16vw, 84px); }
+  .brand-intro-copy { font-size: 13px; }
+  .brand-intro-features { flex-wrap: wrap; gap: 8px 16px; max-width: 210px; line-height: 1.3; }
+  .brand-intro-orb .m { max-width: 80px; line-height: 1.3; }
+  .cobrowse-card { min-width: 184px; }
+}
+
 .skip {
   position: absolute;
   left: -999px;
@@ -1133,7 +1185,11 @@ main {
   transform: scale(1.08);
 }
 
-.activity-center {
+  .fabwrap { width: auto; height: auto; right: 12px; bottom: 12px; }
+  .fabwrap .cobrowse-card { min-width: 184px; }
+
+  .activity-center {
+
   position: fixed;
   right: 16px;
   bottom: 16px;

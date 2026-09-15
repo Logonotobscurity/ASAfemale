@@ -1,20 +1,19 @@
-import { IconPerson } from "@/components/shop/icons";
+import { IconArrow, IconPerson } from "@/components/shop/icons";
 import { useShop } from "@/lib/shop-store";
 
 export function CobrowseFab() {
   const showToast = useShop((s) => s.showToast);
   return (
     <div className="fabwrap">
-      <span className="avatar" aria-hidden="true">
-        <IconPerson />
-      </span>
       <button
         type="button"
-        className="fabplus"
-        aria-label="Co-browsing presence"
-        onClick={() => showToast("CO-BROWSING: 1 FRIEND VIEWING THIS DROP")}
+        className="cobrowse-card"
+        aria-label="Start a co-browsing session"
+        onClick={() => showToast("CO-BROWSING REQUEST SENT — A STYLE GUIDE WILL JOIN SHORTLY")}
       >
-        +
+        <span className="avatar" aria-hidden="true"><IconPerson /></span>
+        <span className="cobrowse-copy"><strong>Style together</strong><small>Invite a guide to this look</small></span>
+        <IconArrow />
       </button>
     </div>
   );
