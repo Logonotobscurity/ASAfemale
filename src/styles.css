@@ -72,6 +72,8 @@ img {
 .ai-assistant {
   position: fixed;
   right: 24px;
+  touch-action: none;
+  will-change: transform;
   bottom: 24px;
   z-index: 45;
   display: flex;
@@ -143,9 +145,9 @@ img {
 .brand-intro-mark svg circle, .brand-intro-mark svg path { stroke: #f7f3ee; }
 .brand-intro-center { width: min(760px, 100%); margin: auto; text-align: center; }
 .brand-intro-kicker { margin: 0 0 24px; color: var(--pink); font-size: 10px; }
-.brand-intro h1 { margin: 0; font-size: clamp(54px, 10vw, 142px); font-weight: 500; line-height: 0.86; letter-spacing: -0.08em; }
-.brand-intro h1 em { color: var(--pink); font-family: Georgia, serif; font-weight: 400; }
-.brand-intro-copy { width: min(400px, 100%); margin: 28px auto 26px; color: rgba(247, 243, 238, 0.65); font-size: 14px; line-height: 1.55; }
+.brand-intro h1 { margin: 0; font-size: clamp(88px, 18vw, 220px); font-weight: 700; line-height: 0.78; letter-spacing: -0.12em; }
+.brand-intro-subtitle { margin: 22px 0 0; color: var(--pink); font-family: Georgia, serif; font-size: clamp(24px, 4vw, 42px); font-style: italic; letter-spacing: -0.04em; }
+.brand-intro-copy { width: min(400px, 100%); margin: 22px auto 26px; color: rgba(247, 243, 238, 0.65); font-size: 14px; line-height: 1.55; }
 .brand-intro-enter { display: inline-flex; align-items: center; gap: 18px; padding: 12px 12px 12px 18px; border: 1px solid rgba(247, 243, 238, 0.4); border-radius: 999px; background: transparent; color: #f7f3ee; font: 11px var(--mono); text-transform: uppercase; letter-spacing: 0.05em; transition: background 0.2s, color 0.2s, transform 0.2s var(--ease); }
 .brand-intro-enter svg { width: 22px; height: 22px; stroke: currentColor; }
 .brand-intro-enter:hover { background: #f7f3ee; color: var(--ink); transform: translateY(-2px); }
